@@ -1,116 +1,113 @@
 # Claude Skills Pack — Windows installer
-# Installs: design-shotgun, canary, careful, guard (gstack) + karpathy-guidelines
 #
-# Claude Code: installs directly to ~/.claude/skills/
-# Other platforms: detects installation and points to gstack setup script
+# Per piattaforma:
+#   Claude Code  → installa gstack skills + karpathy come SKILL.md
+#   Cursor       → installa karpathy come .mdc rule; rimanda gstack a ./setup --host cursor
+#   Altre        → stampa comandi manuali per Superpowers + gstack + karpathy
 
 $ErrorActionPreference = "Stop"
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+function Download($url, $dest) {
+    $folder = Split-Path $dest -Parent
+    if (-not (Test-Path $folder)) { New-Item -ItemType Directory -Force -Path $folder | Out-Null }
+    Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing
+}
+
 # ── Platform detection ────────────────────────────────────────────────────────
 
-$platforms = @{
-    "Cursor"       = @{ dir = "$env:USERPROFILE\.cursor";              host = "cursor"   }
-    "Codex CLI"    = @{ dir = "$env:USERPROFILE\.codex";               host = "codex"    }
-    "OpenCode"     = @{ dir = "$env:USERPROFILE\.config\opencode";     host = "opencode" }
-    "Factory Droid"= @{ dir = "$env:USERPROFILE\.factory";             host = "factory"  }
-    "Slate"        = @{ dir = "$env:USERPROFILE\.slate";               host = "slate"    }
-    "Kiro"         = @{ dir = "$env:USERPROFILE\.kiro";                host = "kiro"     }
-    "Hermes"       = @{ dir = "$env:USERPROFILE\.hermes";              host = "hermes"   }
-    "GBrain"       = @{ dir = "$env:USERPROFILE\.gbrain";              host = "gbrain"   }
+$claudeDir  = "$env:USERPROFILE\.claude"
+$cursorDir  = "$env:USERPROFILE\.cursor"
+
+$others = [ordered]@{
+    "Codex CLI"     = @{ dir = "$env:USERPROFILE\.codex";            host = "codex";    superpowers = "/plugins  →  select Superpowers  →  Install" }
+    "OpenCode"      = @{ dir = "$env:USERPROFILE\.config\opencode";  host = "opencode"; superpowers = "(see https://github.com/obra/superpowers → .opencode/INSTALL.md)" }
+    "Factory Droid" = @{ dir = "$env:USERPROFILE\.factory";          host = "factory";  superpowers = "droid plugin install superpowers@superpowers" }
+    "Slate"         = @{ dir = "$env:USERPROFILE\.slate";            host = "slate";    superpowers = "(see gstack docs)" }
+    "Kiro"          = @{ dir = "$env:USERPROFILE\.kiro";             host = "kiro";     superpowers = "(see gstack docs)" }
+    "Hermes"        = @{ dir = "$env:USERPROFILE\.hermes";           host = "hermes";   superpowers = "(see gstack docs)" }
+    "GBrain"        = @{ dir = "$env:USERPROFILE\.gbrain";           host = "gbrain";   superpowers = "(see gstack docs)" }
 }
 
-$detectedOthers = @()
-foreach ($name in $platforms.Keys) {
-    if (Test-Path $platforms[$name].dir) {
-        $detectedOthers += $platforms[$name]
-    }
+$detectedOthers = [ordered]@{}
+foreach ($name in $others.Keys) {
+    if (Test-Path $others[$name].dir) { $detectedOthers[$name] = $others[$name] }
 }
 
-# ── Claude Code install ───────────────────────────────────────────────────────
-
-$claudeDir = "$env:USERPROFILE\.claude"
+# ══ Claude Code ═══════════════════════════════════════════════════════════════
 
 if (Test-Path $claudeDir) {
     $skillsDir = "$claudeDir\skills"
     Write-Host ""
-    Write-Host "Claude Code detected — installing to $skillsDir"
+    Write-Host "▶ Claude Code — installing to $skillsDir"
     Write-Host ""
 
     $skills = @(
-        @{
-            name  = "design-shotgun"
-            files = @(
-                @{ url = "https://raw.githubusercontent.com/garrytan/gstack/main/design-shotgun/SKILL.md"; dest = "SKILL.md" }
-            )
-        },
-        @{
-            name  = "canary"
-            files = @(
-                @{ url = "https://raw.githubusercontent.com/garrytan/gstack/main/canary/SKILL.md"; dest = "SKILL.md" }
-            )
-        },
-        @{
-            name  = "careful"
-            files = @(
-                @{ url = "https://raw.githubusercontent.com/garrytan/gstack/main/careful/SKILL.md"; dest = "SKILL.md" }
-                @{ url = "https://raw.githubusercontent.com/garrytan/gstack/main/careful/bin/check-careful.sh"; dest = "bin\check-careful.sh" }
-            )
-        },
-        @{
-            name  = "guard"
-            files = @(
-                @{ url = "https://raw.githubusercontent.com/garrytan/gstack/main/guard/SKILL.md"; dest = "SKILL.md" }
-            )
-        },
-        @{
-            name  = "karpathy-guidelines"
-            files = @(
-                @{ url = "https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/SKILL.md"; dest = "SKILL.md" }
-            )
-        }
+        @{ name = "design-shotgun";     url = "https://raw.githubusercontent.com/garrytan/gstack/main/design-shotgun/SKILL.md" },
+        @{ name = "canary";             url = "https://raw.githubusercontent.com/garrytan/gstack/main/canary/SKILL.md" },
+        @{ name = "guard";              url = "https://raw.githubusercontent.com/garrytan/gstack/main/guard/SKILL.md" },
+        @{ name = "karpathy-guidelines";url = "https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/SKILL.md" }
     )
-
-    foreach ($skill in $skills) {
-        $skillDir = "$skillsDir\$($skill.name)"
-        New-Item -ItemType Directory -Force -Path $skillDir | Out-Null
-        foreach ($file in $skill.files) {
-            $destPath = "$skillDir\$($file.dest)"
-            $destFolder = Split-Path $destPath -Parent
-            if (-not (Test-Path $destFolder)) {
-                New-Item -ItemType Directory -Force -Path $destFolder | Out-Null
-            }
-            Invoke-WebRequest -Uri $file.url -OutFile $destPath -UseBasicParsing
-        }
-        Write-Host "  [OK] $($skill.name)"
+    foreach ($s in $skills) {
+        Download $s.url "$skillsDir\$($s.name)\SKILL.md"
+        Write-Host "  [OK] $($s.name)"
     }
 
+    # careful needs its hook script too
+    Download "https://raw.githubusercontent.com/garrytan/gstack/main/careful/SKILL.md" "$skillsDir\careful\SKILL.md"
+    Download "https://raw.githubusercontent.com/garrytan/gstack/main/careful/bin/check-careful.sh" "$skillsDir\careful\bin\check-careful.sh"
+    Write-Host "  [OK] careful"
+
     Write-Host ""
-    Write-Host "Claude Code: done."
-    Write-Host "Next step — install Superpowers inside Claude Code:"
-    Write-Host "  /plugin install superpowers@claude-plugins-official"
-} else {
+    Write-Host "  Next: install Superpowers inside Claude Code:"
+    Write-Host "    /plugin install superpowers@claude-plugins-official"
+}
+else {
     Write-Host ""
-    Write-Host "Claude Code not found — skipping."
+    Write-Host "  Claude Code not found — skipping."
 }
 
-# ── Other platforms ───────────────────────────────────────────────────────────
+# ══ Cursor ════════════════════════════════════════════════════════════════════
+
+if (Test-Path $cursorDir) {
+    Write-Host ""
+    Write-Host "▶ Cursor — installing karpathy rule"
+    Write-Host ""
+
+    $rulesDir = "$cursorDir\rules"
+    Download `
+        "https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/.cursor/rules/karpathy-guidelines.mdc" `
+        "$rulesDir\karpathy-guidelines.mdc"
+    Write-Host "  [OK] karpathy-guidelines  →  $rulesDir\karpathy-guidelines.mdc"
+
+    Write-Host ""
+    Write-Host "  Next steps for Cursor:"
+    Write-Host "    Superpowers : /add-plugin superpowers  (inside Cursor)"
+    Write-Host "    gstack      : cd ~/gstack && ./setup --host cursor"
+    Write-Host "                  (clone first: git clone --depth 1 https://github.com/garrytan/gstack ~/gstack)"
+}
+
+# ══ Other platforms ═══════════════════════════════════════════════════════════
 
 if ($detectedOthers.Count -gt 0) {
     Write-Host ""
-    Write-Host "─────────────────────────────────────────────────────"
-    Write-Host "Other platforms detected."
+    Write-Host "▶ Other platforms detected"
     Write-Host ""
-    Write-Host "gstack transforms skill files differently per platform"
-    Write-Host "(frontmatter, paths, metadata). Use gstack's own setup:"
+    Write-Host "  karpathy-guidelines: paste the content of karpathy-guidelines/SKILL.md"
+    Write-Host "  into your platform's system instructions file (AGENTS.md, GEMINI.md, etc.)"
     Write-Host ""
-    Write-Host "  git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack"
-    Write-Host "  cd ~/gstack"
-    Write-Host ""
-    foreach ($p in $detectedOthers) {
-        Write-Host "  ./setup --host $($p.host)"
+
+    foreach ($name in $detectedOthers.Keys) {
+        $p = $detectedOthers[$name]
+        Write-Host "  ── $name"
+        Write-Host "     Superpowers : $($p.superpowers)"
+        Write-Host "     gstack      : ./setup --host $($p.host)"
+        Write-Host ""
     }
-    Write-Host ""
-    Write-Host "─────────────────────────────────────────────────────"
+
+    Write-Host "  gstack clone (if not already done):"
+    Write-Host "    git clone --single-branch --depth 1 https://github.com/garrytan/gstack ~/gstack"
 }
 
 Write-Host ""
