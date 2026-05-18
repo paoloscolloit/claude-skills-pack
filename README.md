@@ -84,13 +84,11 @@ FASE 7 — Chiusura
 
 ## Platform compatibility
 
-Not all skills work on every AI coding tool. Here's what you get depending on your platform:
-
-| Skill group | Claude Code | Cursor | Gemini CLI | Codex CLI | OpenCode | Copilot CLI |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Superpowers** (14 skills) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **karpathy-guidelines** (philosophy) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
-| **design-shotgun, canary, careful, guard** (gstack) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Skill group | Claude Code | Cursor | Codex CLI | OpenCode | Factory Droid | Slate | Kiro | Hermes | Gemini CLI | Copilot CLI |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Superpowers** (14 skills) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **gstack** (design-shotgun, canary, careful, guard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **karpathy-guidelines** (philosophy) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
 
 ¹ Paste the contents of `karpathy-guidelines/SKILL.md` into your tool's system instructions file (`.cursorrules`, `GEMINI.md`, etc.).
 
@@ -105,23 +103,60 @@ Not all skills work on every AI coding tool. Here's what you get depending on yo
 | **GitHub Copilot CLI** | `copilot plugin marketplace add obra/superpowers-marketplace` |
 | **Factory Droid** | `droid plugin install superpowers@superpowers` |
 
-The 4 gstack skills (`design-shotgun`, `canary`, `careful`, `guard`) use Claude Code's `PreToolUse` hook system, which has no equivalent in other tools yet.
+### Installing gstack skills on other platforms
+
+gstack's setup script auto-detects which agents you have installed:
+
+```bash
+git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack
+cd ~/gstack && ./setup
+```
+
+Or target a specific agent:
+
+```bash
+./setup --host cursor     # installs to ~/.cursor/skills/gstack-*/
+./setup --host codex      # installs to ~/.codex/skills/gstack-*/
+./setup --host opencode   # installs to ~/.config/opencode/skills/gstack-*/
+./setup --host factory    # installs to ~/.factory/skills/gstack-*/
+./setup --host slate      # installs to ~/.slate/skills/gstack-*/
+./setup --host kiro       # installs to ~/.kiro/skills/gstack-*/
+./setup --host hermes     # installs to ~/.hermes/skills/gstack-*/
+```
+
+> Note: the `install.ps1` / `install.sh` scripts in this repo install only the 4 selected gstack skills for **Claude Code**. For other platforms, use the gstack setup script above.
 
 ---
 
 ## Compatibilità con le piattaforme
 
-Non tutte le skill funzionano su ogni tool di AI coding. Ecco cosa ottieni in base alla piattaforma:
-
-| Gruppo skill | Claude Code | Cursor | Gemini CLI | Codex CLI | OpenCode | Copilot CLI |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Superpowers** (14 skill) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **karpathy-guidelines** (filosofia) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
-| **design-shotgun, canary, careful, guard** (gstack) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Gruppo skill | Claude Code | Cursor | Codex CLI | OpenCode | Factory Droid | Slate | Kiro | Hermes | Gemini CLI | Copilot CLI |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Superpowers** (14 skill) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **gstack** (design-shotgun, canary, careful, guard) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **karpathy-guidelines** (filosofia) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
 
 ¹ Incolla il contenuto di `karpathy-guidelines/SKILL.md` nelle istruzioni di sistema del tuo tool (`.cursorrules`, `GEMINI.md`, ecc.).
 
-Le 4 skill gstack usano il sistema di hook `PreToolUse` di Claude Code, che non ha equivalente negli altri tool.
+### Installare le skill gstack su altre piattaforme
+
+Lo script di setup di gstack rileva automaticamente gli agent installati:
+
+```bash
+git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack
+cd ~/gstack && ./setup
+```
+
+Oppure scegli un agent specifico:
+
+```bash
+./setup --host cursor
+./setup --host codex
+./setup --host opencode
+# ecc.
+```
+
+> Nota: gli script `install.ps1` / `install.sh` in questo repo installano solo le 4 skill gstack selezionate per **Claude Code**. Per le altre piattaforme usa il setup di gstack.
 
 ---
 
