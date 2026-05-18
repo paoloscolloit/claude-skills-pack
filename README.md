@@ -2,6 +2,8 @@
 
 > Configurazione completa di skill per Claude Code · Complete Claude Code skill configuration
 
+> **Partial support** for Cursor, Gemini CLI, Codex, OpenCode, GitHub Copilot CLI — see [Platform compatibility](#platform-compatibility) below.
+
 ---
 
 ## Workflow
@@ -77,6 +79,49 @@ FASE 7 — Chiusura
 ├── finishing-a-development-branch: merge / PR / discard con conferma
 └── canary: monitoring post-deploy (errori console, regressioni performance)
 ```
+
+---
+
+## Platform compatibility
+
+Not all skills work on every AI coding tool. Here's what you get depending on your platform:
+
+| Skill group | Claude Code | Cursor | Gemini CLI | Codex CLI | OpenCode | Copilot CLI |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Superpowers** (14 skills) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **karpathy-guidelines** (philosophy) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
+| **design-shotgun, canary, careful, guard** (gstack) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+¹ Paste the contents of `karpathy-guidelines/SKILL.md` into your tool's system instructions file (`.cursorrules`, `GEMINI.md`, etc.).
+
+### Installing Superpowers on other platforms
+
+| Platform | Command |
+|---|---|
+| **Cursor** | `/add-plugin superpowers` or search the marketplace |
+| **Gemini CLI** | `gemini extensions install https://github.com/obra/superpowers` |
+| **Codex CLI** | `/plugins` → select Superpowers → Install |
+| **OpenCode** | follow [opencode install instructions](https://raw.githubusercontent.com/obra/superpowers/main/.opencode/INSTALL.md) |
+| **GitHub Copilot CLI** | `copilot plugin marketplace add obra/superpowers-marketplace` |
+| **Factory Droid** | `droid plugin install superpowers@superpowers` |
+
+The 4 gstack skills (`design-shotgun`, `canary`, `careful`, `guard`) use Claude Code's `PreToolUse` hook system, which has no equivalent in other tools yet.
+
+---
+
+## Compatibilità con le piattaforme
+
+Non tutte le skill funzionano su ogni tool di AI coding. Ecco cosa ottieni in base alla piattaforma:
+
+| Gruppo skill | Claude Code | Cursor | Gemini CLI | Codex CLI | OpenCode | Copilot CLI |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Superpowers** (14 skill) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **karpathy-guidelines** (filosofia) | ✅ | ✅¹ | ✅¹ | ✅¹ | ✅¹ | ✅¹ |
+| **design-shotgun, canary, careful, guard** (gstack) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+¹ Incolla il contenuto di `karpathy-guidelines/SKILL.md` nelle istruzioni di sistema del tuo tool (`.cursorrules`, `GEMINI.md`, ecc.).
+
+Le 4 skill gstack usano il sistema di hook `PreToolUse` di Claude Code, che non ha equivalente negli altri tool.
 
 ---
 
