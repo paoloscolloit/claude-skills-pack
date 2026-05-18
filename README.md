@@ -4,7 +4,45 @@
 
 ---
 
-## Flusso di lavoro / Workflow
+## Workflow
+
+```
+PHASE 0 — Core Philosophy (always active)
+└── karpathy-guidelines: think before coding, minimalism, surgical changes
+
+PHASE 1 — Exploration
+├── brainstorming: what do you really want? Don't assume it's obvious
+└── design-shotgun: if there's UI → generate 3-8 visual variants, pick a direction
+
+PHASE 2 — Planning
+└── writing-plans: granular task-by-task plan (2-5 min each)
+
+PHASE 3 — Safety (when touching prod or shared environments)
+├── careful: automatic warning before rm -rf, DROP TABLE, force-push
+└── guard: careful + block edits outside the specified folder
+
+PHASE 4 — Implementation
+├── using-git-worktrees: isolated workspace, never on main
+├── test-driven-development: red test → code → green → refactor
+├── subagent-driven-development: one agent per task, automatic review
+└── dispatching-parallel-agents: independent problems in parallel
+
+PHASE 5 — Quality
+├── requesting-code-review: after each significant task
+├── receiving-code-review: technical rigor over people-pleasing
+└── systematic-debugging: if a bug appears → root cause first, never guess
+
+PHASE 6 — Verification
+└── verification-before-completion: no "done" without fresh evidence
+
+PHASE 7 — Closing
+├── finishing-a-development-branch: merge / PR / discard with confirmation
+└── canary: post-deploy monitoring (console errors, performance regressions)
+```
+
+---
+
+## Flusso di lavoro
 
 ```
 FASE 0 — Filosofia di base (sempre attiva)
